@@ -1,83 +1,31 @@
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import org web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.Contract;
-import org.web3j.txt.TransactionManager;
-import org.web3j.txt.gas.ContractGasProvider;
+import org.web3j.protocol.http.HttpService;
+import org.web3j.txt.Contract;
 
-public class Greeter extends Contract {
-  private static final String BINARY = "6080604053345920359023525893025903285209385209";
-  public static final String FUNC_KILL = "kill";
-  public static final String FUNC_GREET = "greet";
 
-  @Deprecated
-  protected Greeter(String contractAddress, Web3j web3j,Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-    super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
-  }
-  protected Greeter(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGastProvider) {
-    super(BINARY, contractAddress, web3j, credentials, contractGasProvider);
-  }
-  @Deprecated
-  protected Greeter(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit){
-    super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit) 
-  }
-  protected Greeter(String contractAddress, Web3j web3j,TransactionManager transactionManager,ContractGasProvider contractGasProvider) {
-    super(BINARY,contractAddress,web3j, transactionManager, contractGasProvider);
-  }
-  public RemoteCall<TransactionReceipt> kill() {
-    final Function function = new Function(
-      FUNC_KILL,
-      Arrays.<Type>.asList(),
-      Collections.<TypeReference<?>>emptyList());
-    return executeRemoteCallTransaction(function);
-  }
-  public RemoteCall<String> greet() {
-    final Function function = new Function(FUNC_GREET, 
-      Arrays.<Type>asList(),
-      Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>(){}));
-    return executeRemoteCallSingleValueReturn(function, String.class);
-  }
-  @Deprecated
-  public static Greeter load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice,BigInteger gasLimit) {
-    return new Greeter(contractAddress, web3j, credentials, gasPrice,gasLimit);
-  }
-  @Deprecated
-  public static Greeter load(String contractAddress, Web3j web3j, TransactionManager transactionManager,BigInteger gasPrice, BigInteger gasLimit) {
-    return new Greeter(contractAddress, web3j, transactionManager,gasPrice, gasLimit);
-  }
-  public static Greeter load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-    return new Greeter(contractAddress, web3j, credentials, contractGasProvider);
-  }
-  public static Greeter load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-    return new Greeter(contractAddress, web3j,transactionManager, contractGasProvider);
-  }
-  public static RemoteCall<Greeter> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider, String _greeting)
-  {
-    String encodedConstructor= FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.webj.abi.datatypes.Utf8String(_greeting)));
-    return deployRemoteCall(Greeter.class,web3j, credentials, contractGasProvider, BINARY, encodedConstructor);
-  }
-  public static RemoteCall<Greeter> deploy(Web3j web3j, TransactionManager transactionManager,ContractGasProvider contractGasProvider,String _greeting) {
-    String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_greeting)));
-    return deployRemoteCall(Greeter.class, web3j, transactionManager, contractGasProvider,BINARY, encodedConstructor);
-  }
-  @Deprecated
-  public static RemoteCall<Greeter> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, String _greeting){
-    String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_greeting)));
-    return deployRemoteCall(Greeter.class, web3j, credentials, gasPrice, gasLimit,BINARY, encodedConstructor);
-  }
+public class Greeting {
+  public static void main(String[] args) throws IOException,
+  CipherException, ExecutionException, InterruptedException {
+    String rinkebyKey = "449d64b077ea40aeae9aeb2bbb014947cc";
+    String rinkebyUrl = "https://rinkeby.infura.io/" + rinkebykey;
+    Web3j web3j = Web3j.build(new HttpService(rinkeByUrl)):
 
-  @Deprecated
-  public static RemoteCall<Greeter> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit,String _greeting) {
-    String encodedConstructor = FunctionEncoder.encodeConstructor(Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_greeting)));
-    return deployRemoteCall(Greeter.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, encodedConstructor);
+    String walletFilePassword = "00000000";
+    String walletId = "d517e874a888b58d02dad75c26f2a7ddec144f07bf";
+    String walletSource = "E:\\UTC--2019-04-12T03-47-43.93.1058900Z--" + walletId + ".json";
+
+    Credentials credentials = Wallet.Utils.loadCredentials(walletFilePassword, walletSource);
+    try{
+      Greeter greeter = Greeter.deploy(web3j, credentials, Contract.GAS_PRICE, Contract.GAS_LIMIT,"hello smart contract").send();
+      // display smart contract address
+      System.out.println(greeter.greet().send());
+    } catch(Exception e) {
+      System.out.println(e.toString());
+    }
   }
 }
