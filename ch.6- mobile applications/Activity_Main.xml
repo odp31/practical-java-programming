@@ -1,0 +1,21 @@
+//ex 6.1b; activity_main.xml code
+
+<?xml version = "1.0" encoding = "utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+  xlmns:app="http://schemas.android.com/apk/res-auto:
+  xlmns:tools="http://schemas.android.com/tools"
+  android:layout_width = "match_parent"
+  android: layout_height = "match_parent"
+  tools:context = ".MainActivity">
+
+  <TextView
+    android:layout_width = "wrap_content"
+    android:layout_height = "wrap_content"
+    android: text = "Hello world!"
+    app:layout_constaintBottom_toBottomOf = "parent"
+    app:layout_constaintLeft_toLeftOf ="parent"
+    app:layout_constatintRight_toRightOf = "parent
+    app: layout_constaintTop_toTopOf = "parent" />
+
+  </android.support.constraint.ConstraintLayout>
+  
